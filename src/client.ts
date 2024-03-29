@@ -3,6 +3,13 @@ import { Repo } from "@automerge/automerge-repo"
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
 import assert from "assert";
 
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const data = require("./data.json");
+
+// import generated from './generated.json' assert { type: 'json' };
+
+/*
 const sizeInMBToTest = 5;
 const arrayLength = sizeInMBToTest * 1_000_000 / 100;
 const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -14,6 +21,7 @@ const sizeInMB = sizeInBytes / 1_000_000;
 console.log(new Date().toLocaleString());
 console.log(`sizeInBytes: ${sizeInBytes}`);
 console.log(`sizeInMB: ${sizeInMB}`);
+*/
 
 console.log(`${new Date().toLocaleString()} websocket test client starting`);
 
@@ -27,10 +35,10 @@ const repo2 = new Repo({
   network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
 });
 
-const testJson = {
-  stringArray: stringArray
-};
-const testDoc = A.from(testJson);
+// const testJson = { stringArray: stringArray };
+// const testDoc = A.from(testJson);
+
+const testDoc = A.from(data);
 
 console.log(`${new Date().toLocaleString()} created test doc locally`);
 
