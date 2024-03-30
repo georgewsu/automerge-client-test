@@ -16,7 +16,7 @@ To reproduce `Error: recursive use of an object detected which would lead to uns
 ```
 gunzip generated.json.gz
 mkdir -p dist
-cp generated.json dist/
+cp generated.json dist/data.json
 npm install
 npm run client
 ```
