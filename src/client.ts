@@ -3,7 +3,7 @@ import { Repo } from "@automerge/automerge-repo"
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
 import assert from "assert";
 
-const sizeInMBToTest = 5;
+const sizeInMBToTest = 10;
 const arrayLength = sizeInMBToTest * 1_000_000 / 100;
 const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const stringWith100Characters = (characters + characters).slice(0, 100);
