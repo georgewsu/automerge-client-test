@@ -67,7 +67,7 @@ console.log(`${new Date().toLocaleString()} called repo2.find`);
 assert.equal(Object.keys(repo2.handles).length, 1);
 
 // @ts-ignore
-const docFound = await handle1found.doc();
+const docFound = await handle1found.doc(["ready"]);
 
 // @ts-ignore
 const testString = docFound.testString;
