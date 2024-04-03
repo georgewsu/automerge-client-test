@@ -7,8 +7,6 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const data = require("./data.json");
 
-// import generated from './generated.json' assert { type: 'json' };
-
 /*
 const sizeInMBToTest = 5;
 const arrayLength = sizeInMBToTest * 1_000_000 / 100;
@@ -35,14 +33,15 @@ const repo2 = new Repo({
   network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
 });
 
-// const testJson = { stringArray: stringArray };
-// const testDoc = A.from(testJson);
-
-const testDoc = A.from(data);
+/*
+const testJson = {
+  stringArray: stringArray
+};
+*/
 
 console.log(`${new Date().toLocaleString()} created test doc locally`);
 
-const handle1 = repo1.create(testDoc);
+const handle1 = repo1.create(data);
 
 handle1.change((doc) => {
   // @ts-ignore
@@ -67,7 +66,7 @@ console.log(`${new Date().toLocaleString()} called repo2.find`);
 assert.equal(Object.keys(repo2.handles).length, 1);
 
 // @ts-ignore
-const docFound = await handle1found.doc();
+const docFound = await handle1found.doc(["ready"]);
 
 // @ts-ignore
 const testString = docFound.testString;
