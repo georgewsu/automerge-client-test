@@ -13,7 +13,7 @@ const repo = new Repo({
 // withholds existing documents from new peers until they request them
 assert.equal(Object.keys(repo.handles).length, 0);
 
-const documentId = "d6pp5ScsaiafojrTMYMkRU6ixBR" as DocumentId;
+const documentId = "22DLvZbzqa8bKNtvh6FeFgjGMrDD" as DocumentId;
 const url = stringifyAutomergeUrl(documentId);
 
 console.log(`${new Date().toLocaleString()} calling repo.find`);
@@ -28,6 +28,10 @@ const docFound = await handle1found.doc(["ready"]);
 // @ts-ignore
 const testString = docFound.testString;
 console.log(`${new Date().toLocaleString()} doc found with testString value: ${testString}`);
+
+// @ts-ignore
+const stringArray = docFound.stringArray as string[];
+console.log(`${new Date().toLocaleString()} doc found with stringArray value: ${stringArray.length}`);
 
 console.log(`Exiting!`);
 process.exit();
