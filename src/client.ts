@@ -1,6 +1,5 @@
 import { createRequire } from "module";
 import process from "node:process";
-import { next as A } from '@automerge/automerge'
 import {
   Chunk,
   Repo,
@@ -56,18 +55,6 @@ const data = require("./data.json");
 console.log(`${new Date().toLocaleString()}`);
 logMemoryUsage();
 
-// load doc
-/*
-for (let i = 0; i < 10; i++) {
-  console.log(`${new Date().toLocaleString()} i: ${i}`);
-  console.log(`${new Date().toLocaleString()} creating doc from data`);
-  A.from(data);
-  console.log(`${new Date().toLocaleString()} created doc from data`);
-  logMemoryUsage();
-}
-*/
-
-// repo create doc
 for (let i = 0; i < 10; i++) {
   console.log(`${new Date().toLocaleString()} i: ${i}`);
   console.log(`${new Date().toLocaleString()} creating doc in repo`);
