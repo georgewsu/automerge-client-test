@@ -1,19 +1,15 @@
 import { next as A } from '@automerge/automerge'
-import { Repo } from "@automerge/automerge-repo"
-import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
+import { Repo } from "@automerge/automerge-repo";
+import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket";
 import assert from "assert";
 
-const sizeInMBToTest = 5;
+const sizeInMBToTest = 10;
 const arrayLength = sizeInMBToTest * 1_000_000 / 100;
 const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const stringWith100Characters = (characters + characters).slice(0, 100);
-const stringArray: string[] = new Array(arrayLength).fill(stringWith100Characters);
-const sizeInBytes = new Blob(stringArray).size;
-const sizeInMB = sizeInBytes / 1_000_000;
+const rawStringArray: A.RawString[] = new Array(arrayLength).fill(new A.RawString(stringWith100Characters));
 
 console.log(new Date().toLocaleString());
-console.log(`sizeInBytes: ${sizeInBytes}`);
-console.log(`sizeInMB: ${sizeInMB}`);
 
 console.log(`${new Date().toLocaleString()} websocket test client starting`);
 
@@ -28,7 +24,7 @@ const repo2 = new Repo({
 });
 
 const testJson = {
-  stringArray: stringArray
+  stringArray: rawStringArray
 };
 
 console.log(`${new Date().toLocaleString()} created test doc locally`);
@@ -37,7 +33,7 @@ const handle1 = repo1.create(testJson);
 
 handle1.change((doc) => {
   // @ts-ignore
-  doc.testString = 'test';
+  doc.testString = new A.RawString('test');
 });
 
 console.log(`${new Date().toLocaleString()} created test doc in repo`);
@@ -63,6 +59,13 @@ const docFound = await handle1found.doc(["ready"]);
 // @ts-ignore
 const testString = docFound.testString;
 console.log(`${new Date().toLocaleString()} doc found with testString value: ${testString}`);
+
+// @ts-ignore
+const stringArrayFound: A.RawString[] = docFound.stringArray;
+console.log(`doc found with RawString array of length: ${stringArrayFound.length}`);
+// for (const rawStringFound of stringArrayFound) {
+  // console.log(rawStringFound);
+// }
 
 console.log(`Exiting!`);
 process.exit();
