@@ -5,23 +5,7 @@ import assert from "assert";
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const data = require("./data.json");
-
-// import generated from './generated.json' assert { type: 'json' };
-
-/*
-const sizeInMBToTest = 5;
-const arrayLength = sizeInMBToTest * 1_000_000 / 100;
-const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const stringWith100Characters = (characters + characters).slice(0, 100);
-const stringArray: string[] = new Array(arrayLength).fill(stringWith100Characters);
-const sizeInBytes = new Blob(stringArray).size;
-const sizeInMB = sizeInBytes / 1_000_000;
-
-console.log(new Date().toLocaleString());
-console.log(`sizeInBytes: ${sizeInBytes}`);
-console.log(`sizeInMB: ${sizeInMB}`);
-*/
+const file = require("./file.json");
 
 console.log(`${new Date().toLocaleString()} websocket test client starting`);
 
@@ -35,18 +19,30 @@ const repo2 = new Repo({
   network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
 });
 
-// const testJson = { stringArray: stringArray };
-// const testDoc = A.from(testJson);
-
-// const testDoc = A.from(data);
-
 console.log(`${new Date().toLocaleString()} created test doc locally`);
 
+const mapProductToAutomerge = (value: any) => {
+  if (value === null || typeof value === 'number' || typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'string') {
+    return new A.RawString(value);
+  }
+  if (typeof value === 'object') {
+    if (Array.isArray(value)) {
+      return value.map(mapProductToAutomerge);
+    }
+    return Object.fromEntries(
+      Object.entries(value).map(([key, value]) => [key, mapProductToAutomerge(value)])
+    );
+  }
+}
+
+const data = mapProductToAutomerge(file);
 const handle1 = repo1.create(data);
 
 handle1.change((doc) => {
-  // @ts-ignore
-  doc.testString = 'test';
+  Object.assign(doc, data);
 });
 
 console.log(`${new Date().toLocaleString()} created test doc in repo`);
@@ -70,8 +66,8 @@ assert.equal(Object.keys(repo2.handles).length, 1);
 const docFound = await handle1found.doc(["ready"]);
 
 // @ts-ignore
-const testString = docFound.testString;
-console.log(`${new Date().toLocaleString()} doc found with testString value: ${testString}`);
+const productName = docFound.product.name;
+console.log(`${new Date().toLocaleString()} doc found with productName value: ${productName}`);
 
 console.log(`Exiting!`);
 process.exit();
