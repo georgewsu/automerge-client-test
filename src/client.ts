@@ -1,6 +1,10 @@
-import { stringifyAutomergeUrl, DocumentId, Repo} from "@automerge/automerge-repo"
+import { DocumentId, Repo} from "@automerge/automerge-repo"
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
-import assert from "assert";
+
+if (process.argv.length !== 3) {
+  console.log(`Usage: npm run client <documentId>`);
+  process.exit();
+}
 
 console.log(`${new Date().toLocaleString()} websocket test client starting`);
 
@@ -10,28 +14,19 @@ const repo = new Repo({
   network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
 });
 
-// withholds existing documents from new peers until they request them
-assert.equal(Object.keys(repo.handles).length, 0);
-
-const documentId = "22DLvZbzqa8bKNtvh6FeFgjGMrDD" as DocumentId;
-const url = stringifyAutomergeUrl(documentId);
+const documentId = process.argv[process.argv.length - 1] as DocumentId;
 
 console.log(`${new Date().toLocaleString()} calling repo.find`);
-const handle1found = repo.find(url);
+const handleFound = repo.find(documentId);
 console.log(`${new Date().toLocaleString()} called repo.find`);
 
-assert.equal(Object.keys(repo.handles).length, 1);
-
 // @ts-ignore
-const docFound = await handle1found.doc(["ready"]);
+const docFound = await handleFound.doc(["ready"]);
+console.log(`${new Date().toLocaleString()} doc ready`);
 
-// @ts-ignore
-const testString = docFound.testString;
-console.log(`${new Date().toLocaleString()} doc found with testString value: ${testString}`);
-
-// @ts-ignore
-const stringArray = docFound.stringArray as string[];
-console.log(`${new Date().toLocaleString()} doc found with stringArray value: ${stringArray.length}`);
+console.log(`doc:`);
+console.log(docFound);
+console.log();
 
 console.log(`Exiting!`);
 process.exit();
