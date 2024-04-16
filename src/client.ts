@@ -2,18 +2,13 @@ import { next as A } from '@automerge/automerge'
 import { Repo } from "@automerge/automerge-repo"
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
 import assert from "assert";
+import { RawString } from "@automerge/automerge/next";
 
-const sizeInMBToTest = 5;
-const arrayLength = sizeInMBToTest * 1_000_000 / 100;
+const arrayLength = 100;
 const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const stringWith100Characters = (characters + characters).slice(0, 100);
-const stringArray: string[] = new Array(arrayLength).fill(stringWith100Characters);
-const sizeInBytes = new Blob(stringArray).size;
-const sizeInMB = sizeInBytes / 1_000_000;
-
-console.log(new Date().toLocaleString());
-console.log(`sizeInBytes: ${sizeInBytes}`);
-console.log(`sizeInMB: ${sizeInMB}`);
+const stringWithCharacters = (characters + characters).slice(0, 50);
+const stringArray: string[] = new Array(arrayLength).fill(stringWithCharacters);
+const rawStringArray = stringArray.map(s => new RawString(s));
 
 console.log(`${new Date().toLocaleString()} websocket test client starting`);
 
@@ -27,8 +22,12 @@ const repo2 = new Repo({
   network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
 });
 
+const workflowObject = {
+  workflowFields: rawStringArray
+}
+
 const testJson = {
-  stringArray: stringArray
+  workflows: new Array(1000).fill(workflowObject)
 };
 
 console.log(`${new Date().toLocaleString()} created test doc locally`);
@@ -42,17 +41,8 @@ handle1.change((doc) => {
 
 console.log(`${new Date().toLocaleString()} created test doc in repo`);
 
-// wait to give the server time to sync the document
-// @ts-ignore
-await new Promise((resolve) => setTimeout(resolve, 1000))
-
-console.log(`${new Date().toLocaleString()} waited for 1000ms`);
-
-// withholds existing documents from new peers until they request them
-assert.equal(Object.keys(repo2.handles).length, 0);
-
 console.log(`${new Date().toLocaleString()} calling repo2.find`);
-const handle1found = repo2.find(handle1.url);
+const handle1found = repo2.find(handle1.documentId);
 console.log(`${new Date().toLocaleString()} called repo2.find`);
 
 assert.equal(Object.keys(repo2.handles).length, 1);
@@ -63,6 +53,28 @@ const docFound = await handle1found.doc(["ready"]);
 // @ts-ignore
 const testString = docFound.testString;
 console.log(`${new Date().toLocaleString()} doc found with testString value: ${testString}`);
+// @ts-ignore
+const workflows = docFound.workflows;
+console.log(`${new Date().toLocaleString()} doc found with workflows: ${workflows.length}`);
+
+for (let j = 0; j < 10; j++) {
+  for (let i = 0; i < 10; i++) {
+    handle1.change((doc) => {
+      doc.workflows.push(workflowObject);
+    });
+  }
+
+  // wait to give the server time to sync the document
+  // @ts-ignore
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  const handle1found2 = repo2.find(handle1.documentId);
+  // @ts-ignore
+  const docFound2 = await handle1found2.doc(["ready"]);
+  // @ts-ignore
+  const workflows2 = docFound2.workflows;
+  console.log(`${new Date().toLocaleString()} doc ${handle1.documentId} found with workflows: ${workflows2.length}`);
+}
 
 console.log(`Exiting!`);
 process.exit();
