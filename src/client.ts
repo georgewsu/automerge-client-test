@@ -1,4 +1,4 @@
-import { next as A } from '@automerge/automerge'
+// import { next as A } from '@automerge/automerge'
 import { Repo } from "@automerge/automerge-repo"
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
 import assert from "assert";
@@ -57,8 +57,8 @@ console.log(`${new Date().toLocaleString()} doc found with testString value: ${t
 const workflows = docFound.workflows;
 console.log(`${new Date().toLocaleString()} doc found with workflows: ${workflows.length}`);
 
-for (let j = 0; j < 10; j++) {
-  for (let i = 0; i < 10; i++) {
+for (let j = 0; j < 1000; j++) {
+  for (let i = 0; i < 1; i++) {
     handle1.change((doc) => {
       doc.workflows.push(workflowObject);
     });
@@ -66,15 +66,19 @@ for (let j = 0; j < 10; j++) {
 
   // wait to give the server time to sync the document
   // @ts-ignore
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  const handle1found2 = repo2.find(handle1.documentId);
-  // @ts-ignore
-  const docFound2 = await handle1found2.doc(["ready"]);
-  // @ts-ignore
-  const workflows2 = docFound2.workflows;
-  console.log(`${new Date().toLocaleString()} doc ${handle1.documentId} found with workflows: ${workflows2.length}`);
+  await new Promise((resolve) => setTimeout(resolve, 10))
 }
+
+// wait to give the server time to sync the document
+// @ts-ignore
+await new Promise((resolve) => setTimeout(resolve, 5000))
+
+const handle1found2 = repo2.find(handle1.documentId);
+// @ts-ignore
+const docFound2 = await handle1found2.doc(["ready"]);
+// @ts-ignore
+const workflows2 = docFound2.workflows;
+console.log(`${new Date().toLocaleString()} doc ${handle1.documentId} found with workflows: ${workflows2.length}`);
 
 console.log(`Exiting!`);
 process.exit();
