@@ -1,4 +1,3 @@
-import { next as A } from '@automerge/automerge'
 import { Repo } from "@automerge/automerge-repo"
 
 import { createRequire } from "module";
@@ -16,24 +15,7 @@ const repo1 = new Repo({
   storage: new IndexedDBStorageAdapter("automerge-repo-client-test"),
 });
 
-const convertRawString = (value: any) => {
-  if (value === null || typeof value === 'number' || typeof value === 'boolean') {
-    return value;
-  }
-  if (typeof value === 'string') {
-    return new A.RawString(value);
-  }
-  if (typeof value === 'object') {
-    if (Array.isArray(value)) {
-      return value.map(convertRawString);
-    }
-    return Object.fromEntries(
-      Object.entries(value).map(([key, value]) => [key, convertRawString(value)])
-    );
-  }
-}
-
-const data = convertRawString(file);
+const data = file;
 
 const formatMemoryUsage = (data: number): string => `${Math.round(data / 1024 / 1024)} MB`;
 function logMemoryUsage(repo: Repo): void {
@@ -47,7 +29,10 @@ function logMemoryUsage(repo: Repo): void {
   console.log(`heapUsed: ${heapUsed} heapTotal: ${heapTotal} external: ${external} rss: ${rss} heapSizeLimit: ${heapSizeLimit}`);
 }
 
+console.log(`Starting test`);
+
 for (let i = 1; i <= 50; i++) {
+  console.log(`test ${i}`);
   const handle1 = repo1.create(data);
   console.log(`${new Date().toLocaleString()} created test doc in repo`);
   if (i % 10 === 0) {

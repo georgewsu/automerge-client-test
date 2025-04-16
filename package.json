@@ -11,11 +11,12 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@automerge/automerge": "^2.2.8",
-    "@automerge/automerge-repo": "^1.2.1",
-    "@automerge/automerge-repo-network-broadcastchannel": "^1.2.1",
-    "@automerge/automerge-repo-network-websocket": "^1.2.1",
-    "@automerge/automerge-repo-storage-indexeddb": "^1.2.1",
+    "@automerge/automerge": "^3.0.0-alpha.1",
+    "@automerge/automerge-repo": "^2.0.0-alpha.27",
+    "@automerge/automerge-repo-network-broadcastchannel": "^2.0.0-alpha.27",
+    "@automerge/automerge-repo-network-websocket": "^2.0.0-alpha.27",
+    "@automerge/automerge-repo-storage-indexeddb": "^2.0.0-alpha.27",
+    "@automerge/automerge-wasm": "^1.0.0-preview.2",
     "ws": "^8.7.0"
   },
   "type": "module"
