@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/client.js",
   "scripts": {
-    "client": "./node_modules/typescript/bin/tsc && node dist/client.js",
+    "client": "./node_modules/typescript/bin/tsc && node --max-old-space-size=8000 dist/client.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -11,9 +11,11 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@automerge/automerge": "^2.1.10",
-    "@automerge/automerge-repo": "^1.1.0",
-    "@automerge/automerge-repo-network-websocket": "^1.1.0",
+    "@automerge/automerge": "^2.2.8",
+    "@automerge/automerge-repo": "^1.2.1",
+    "@automerge/automerge-repo-network-broadcastchannel": "^1.2.1",
+    "@automerge/automerge-repo-network-websocket": "^1.2.1",
+    "@automerge/automerge-repo-storage-indexeddb": "^1.2.1",
     "ws": "^8.7.0"
   },
   "type": "module"

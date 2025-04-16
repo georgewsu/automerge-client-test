@@ -1,26 +1,22 @@
 import { next as A } from '@automerge/automerge'
 import { Repo } from "@automerge/automerge-repo"
-import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
-import assert from "assert";
 
 import { createRequire } from "module";
+import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
+import { BroadcastChannelNetworkAdapter } from "@automerge/automerge-repo-network-broadcastchannel";
+import v8 from "v8";
 
 const require = createRequire(import.meta.url);
 const file = require("./file.json");
 
-console.log(`${new Date().toLocaleString()} websocket test client starting`);
-
-const PORT = 3030;
-
 const repo1 = new Repo({
-  network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
+  network: [
+    new BroadcastChannelNetworkAdapter(),
+  ],
+  storage: new IndexedDBStorageAdapter("automerge-repo-client-test"),
 });
 
-const repo2 = new Repo({
-  network: [new BrowserWebSocketClientAdapter(`ws://localhost:${PORT}`)],
-});
-
-const mapProductToAutomerge = (value: any) => {
+const convertRawString = (value: any) => {
   if (value === null || typeof value === 'number' || typeof value === 'boolean') {
     return value;
   }
@@ -29,30 +25,35 @@ const mapProductToAutomerge = (value: any) => {
   }
   if (typeof value === 'object') {
     if (Array.isArray(value)) {
-      return value.map(mapProductToAutomerge);
+      return value.map(convertRawString);
     }
     return Object.fromEntries(
-      Object.entries(value).map(([key, value]) => [key, mapProductToAutomerge(value)])
+      Object.entries(value).map(([key, value]) => [key, convertRawString(value)])
     );
   }
 }
 
-const data = mapProductToAutomerge(file);
-const handle1 = repo1.create(data);
+const data = convertRawString(file);
 
-console.log(`${new Date().toLocaleString()} created test doc in repo`);
+const formatMemoryUsage = (data: number): string => `${Math.round(data / 1024 / 1024)} MB`;
+function logMemoryUsage(repo: Repo): void {
+  console.log(`repo handles: ${Object.keys(repo.handles).length}`);
+  const memoryUsage = process.memoryUsage();
+  const heapUsed = formatMemoryUsage(memoryUsage.heapUsed);
+  const heapTotal = formatMemoryUsage(memoryUsage.heapTotal);
+  const external = formatMemoryUsage(memoryUsage.external);
+  const rss = formatMemoryUsage(memoryUsage.rss);
+  const heapSizeLimit = formatMemoryUsage(v8.getHeapStatistics().heap_size_limit);
+  console.log(`heapUsed: ${heapUsed} heapTotal: ${heapTotal} external: ${external} rss: ${rss} heapSizeLimit: ${heapSizeLimit}`);
+}
 
-console.log(`${new Date().toLocaleString()} calling repo2.find`);
-const handle1found = repo2.find(handle1.url);
-
-assert.equal(Object.keys(repo2.handles).length, 1);
-
-console.log(`${new Date().toLocaleString()} waiting for doc to be ready`);
-const docFound = await handle1found.doc(["ready"]);
-
-// @ts-ignore
-const productName = docFound?.product?.name;
-console.log(`${new Date().toLocaleString()} doc found with productName value: ${productName}`);
+for (let i = 1; i <= 50; i++) {
+  const handle1 = repo1.create(data);
+  console.log(`${new Date().toLocaleString()} created test doc in repo`);
+  if (i % 10 === 0) {
+    logMemoryUsage(repo1)
+  }
+}
 
 console.log(`Exiting!`);
 process.exit();
