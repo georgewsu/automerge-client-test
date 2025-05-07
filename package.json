@@ -11,10 +11,12 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@automerge/automerge": "^2.1.10",
-    "@automerge/automerge-repo": "^1.1.0",
-    "@automerge/automerge-repo-network-websocket": "^1.1.0",
-    "ws": "^8.7.0"
+    "@automerge/automerge": "^2.2.9",
+    "@automerge/automerge-repo": "^1.2.1",
+    "@automerge/automerge-repo-network-websocket": "^1.2.1",
+    "@automerge/automerge-repo-storage-indexeddb": "^1.2.1",
+    "ws": "^8.7.0",
+    "yargs": "^17.7.2"
   },
   "type": "module"
 }
