@@ -4,11 +4,15 @@ import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 import { createRequire } from "module"
 import process from "node:process"
 import v8 from "v8"
 
-const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const require = createRequire(__filename)
 
 const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const stringWith100Characters = (characters + characters).slice(0, 100);
@@ -197,7 +201,7 @@ async function main() {
       console.log(`Connecting to websocket at ws://${WEBSOCKET_HOST}:${WEBSOCKET_PORT}...`);
       const adapter = new BrowserWebSocketClientAdapter(`ws://${WEBSOCKET_HOST}:${WEBSOCKET_PORT}`);
       websocketRepo = new Repo({
-        network: [adapter],
+        network: [adapter as any], // Type assertion to handle the interface mismatch
       });
       // wait for connection to establish
       await sleep(2000);
