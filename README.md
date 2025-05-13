@@ -6,17 +6,28 @@ Test and benchmark Automerge performance with various options:
 - Local repo vs network connected repo
 - Generated test data vs data read from file
 - Number of iterations to run
+- Convert strings to RawString
 
 ## Prerequisites
+- pnpm
+- node
 - (optional) Automerge sync server running on localhost with websocket port 3030
+
+## Setup
+```bash
+# Create dist directory and download test data if needed (1MB sample)
+mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://microsoftedge.github.io/Demos/json-dummy-data/1MB.json
+# Create dist directory and download test data if needed (10MB sample)
+mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://raw.githubusercontent.com/TheProfs/socket-mem-leak/refs/heads/master/10mb-sample.json
+```
 
 ## Usage
 ```bash
-npm install
-npm run client
+pnpm install
+pnpm client
 
 # Run with specific options
-npm run client -- --iterations 5 --dataSource generated --size 2 --repo websocket --useRawString true
+pnpm client --iterations 5 --dataSource generated --size .5 --repo local --useRawString true
 ```
 
 ### Command Line Options
@@ -28,22 +39,24 @@ npm run client -- --iterations 5 --dataSource generated --size 2 --repo websocke
 
 ### Examples
 
-1. Test with local repository and file data:
+1. Test with automerge only (no repository) and generated data:
 ```bash
-npm run client -- -r local -d file
+pnpm client -i 10 -d generated -s 0.1 -r none -u false
 ```
 
-2. Test with WebSocket repository and generated data:
+2. Test with local repository and generated data:
 ```bash
-npm run client -- -r websocket -d generated -s 5
+pnpm client -i 10 -d generated -s 0.1 -r local -u false
 ```
 
-3. Test with RawString conversion:
+3. Test with WebSocket repository and data file, convert to RawString:
 ```bash
-npm run client -- -u true -i 3
+mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://microsoftedge.github.io/Demos/json-dummy-data/1MB.json
+pnpm client -i 5 -d file -r websocket -u true
 ```
 
-4. Test with all options:
+4. Reproduce crash using data file:
 ```bash
-npm run client -- -i 25 -d generated -s 10 -r websocket -u true
+mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://raw.githubusercontent.com/TheProfs/socket-mem-leak/refs/heads/master/10mb-sample.json
+pnpm client -i 5 -d file -r local -u false
 ```
