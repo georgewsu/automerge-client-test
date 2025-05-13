@@ -14,19 +14,24 @@ Test and benchmark Automerge performance with various options:
 - (optional) Automerge sync server running on localhost with websocket port 3030
 
 ## Setup
+Create dist directory and download test data if needed (1MB sample)
 ```bash
-# Create dist directory and download test data if needed (1MB sample)
 mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://microsoftedge.github.io/Demos/json-dummy-data/1MB.json
-# Create dist directory and download test data if needed (10MB sample)
+```
+Create dist directory and download test data if needed (10MB sample)
+```bash
 mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://raw.githubusercontent.com/TheProfs/socket-mem-leak/refs/heads/master/10mb-sample.json
 ```
 
 ## Usage
 ```bash
 pnpm install
+```
+```bash
 pnpm client
-
-# Run with specific options
+```
+Run with specific options
+```bash
 pnpm client --iterations 5 --dataSource generated --size .5 --repo local --useRawString true
 ```
 
@@ -52,11 +57,15 @@ pnpm client -i 10 -d generated -s 0.1 -r local -u false
 3. Test with WebSocket repository and data file, convert to RawString:
 ```bash
 mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://microsoftedge.github.io/Demos/json-dummy-data/1MB.json
+```
+```bash
 pnpm client -i 5 -d file -r websocket -u true
 ```
 
 4. Reproduce crash using data file:
 ```bash
 mkdir -p dist && [ ! -f dist/data.json ] && curl -o dist/data.json https://raw.githubusercontent.com/TheProfs/socket-mem-leak/refs/heads/master/10mb-sample.json
+```
+```bash
 pnpm client -i 5 -d file -r local -u false
 ```
