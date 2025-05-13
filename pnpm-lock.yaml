@@ -9,16 +9,16 @@ importers:
   .:
     dependencies:
       '@automerge/automerge':
-        specifier: 2.2.9
+        specifier: ^2.2.9
         version: 2.2.9
       '@automerge/automerge-repo':
-        specifier: 1.2.1
+        specifier: ^1.2.1
         version: 1.2.1(@types/node@22.15.17)(typescript@5.8.3)
       '@automerge/automerge-repo-network-websocket':
-        specifier: 1.2.1
+        specifier: ^1.2.1
         version: 1.2.1(@types/node@22.15.17)(typescript@5.8.3)
       '@automerge/automerge-repo-storage-indexeddb':
-        specifier: 1.2.1
+        specifier: ^1.2.1
         version: 1.2.1(@types/node@22.15.17)(typescript@5.8.3)
       ws:
         specifier: ^8.7.0
