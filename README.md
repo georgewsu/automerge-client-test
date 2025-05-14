@@ -1,7 +1,7 @@
 # Automerge Client Test
 
 ## Overview
-Test and benchmark Automerge performance with various options:
+Test and benchmark Automerge memory usage with various options:
 - Automerge library vs repo for document creation
 - Local repo vs network connected repo
 - Generated test data vs data read from file
@@ -62,7 +62,15 @@ mkdir -p dist && curl -o dist/data.json https://microsoftedge.github.io/Demos/js
 pnpm client -i 5 -d file -r websocket -u true
 ```
 
-4. Reproduce crash using data file:
+4. Compare memory usage with and without using RawString:
+```bash
+pnpm client -i 25 -d generated -s 10 -r local -u true
+```
+```bash
+pnpm client -i 10 -d generated -s 10 -r local -u false
+```
+
+5. Reproduce crash using data file:
 ```bash
 mkdir -p dist && curl -o dist/data.json https://raw.githubusercontent.com/TheProfs/socket-mem-leak/refs/heads/master/10mb-sample.json
 ```
