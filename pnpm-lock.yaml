@@ -9,16 +9,16 @@ importers:
   .:
     dependencies:
       '@automerge/automerge':
-        specifier: ^2.2.9
-        version: 2.2.9
+        specifier: 3.0.0-beta.0
+        version: 3.0.0-beta.0
       '@automerge/automerge-repo':
-        specifier: ^2.0.0
+        specifier: 2.0.0
         version: 2.0.0
       '@automerge/automerge-repo-network-websocket':
-        specifier: ^2.0.0
+        specifier: 2.0.0
         version: 2.0.0
       '@automerge/automerge-repo-storage-indexeddb':
-        specifier: ^2.0.0
+        specifier: 2.0.0
         version: 2.0.0
       ws:
         specifier: ^8.7.0
@@ -50,6 +50,9 @@ packages:
 
   '@automerge/automerge@2.2.9':
     resolution: {integrity: sha512-6HM52Ops79hAQBWMg/t0MNfGOdEiXyenQjO9F1hKZq0RWDsMLpPa1SzRy/C4/4UyX67sTHuA5CwBpH34SpfZlA==}
+
+  '@automerge/automerge@3.0.0-beta.0':
+    resolution: {integrity: sha512-0z4nTAZGbMzoqhIvrrOr/BfY/mE02L4dzGnYok3QiUlLdTO1bXktaGkNR670qz1JAfzTjMI9o51oI74UHYZN+g==}
 
   '@cbor-extract/cbor-extract-darwin-arm64@2.2.0':
     resolution: {integrity: sha512-P7swiOAdF7aSi0H+tHtHtr6zrpF3aAq/W9FXx5HektRvLTM2O89xCyXF3pk7pLc7QpaY7AoaE8UowVf9QBdh3w==}
@@ -85,8 +88,8 @@ packages:
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
 
-  '@types/node@22.15.17':
-    resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
+  '@types/node@22.15.18':
+    resolution: {integrity: sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg==}
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
@@ -271,6 +274,8 @@ snapshots:
     dependencies:
       uuid: 9.0.1
 
+  '@automerge/automerge@3.0.0-beta.0': {}
+
   '@cbor-extract/cbor-extract-darwin-arm64@2.2.0':
     optional: true
 
@@ -291,13 +296,13 @@ snapshots:
 
   '@noble/hashes@1.8.0': {}
 
-  '@types/node@22.15.17':
+  '@types/node@22.15.18':
     dependencies:
       undici-types: 6.21.0
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 22.15.17
+      '@types/node': 22.15.18
 
   '@types/yargs-parser@21.0.3': {}
 
