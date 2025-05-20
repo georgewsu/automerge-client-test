@@ -125,6 +125,8 @@ async function runMemoryUsageTest(options: {
   });
   console.log(`Data loaded, size: ${JSON.stringify(data).length} bytes`);
 
+  console.log(`Test starting`);
+  const startTime = performance.now();
   for (let i = 0; i < options.iterations; i++) {
     console.log();
     console.log(`${new Date().toLocaleString()} iteration: ${i+1}`);
@@ -142,6 +144,8 @@ async function runMemoryUsageTest(options: {
 
     logMemoryUsage();
   }
+  const duration = Math.ceil(performance.now() - startTime);
+  console.log(`Test ended, took: ${duration}ms`);
 }
 
 // Parse command line arguments
