@@ -8,20 +8,20 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/ws": "^8.5.10",
-    "@types/yargs": "^17.0.33",
-    "typescript": "^5.4.3"
+    "@types/ws": "8.5.10",
+    "@types/yargs": "17.0.33",
+    "typescript": "5.4.3"
   },
   "dependencies": {
     "@automerge/automerge": "3.0.0-beta.0",
     "@automerge/automerge-repo": "2.0.0",
     "@automerge/automerge-repo-network-websocket": "2.0.0",
     "@automerge/automerge-repo-storage-indexeddb": "2.0.0",
-    "ws": "^8.7.0",
-    "yargs": "^17.7.2"
+    "ws": "8.7.0",
+    "yargs": "17.7.2"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "packageManager": "pnpm@8.15.4"
 }
