@@ -9,6 +9,7 @@ import { dirname } from 'path'
 import { createRequire } from "module"
 import process from "node:process"
 import v8 from "v8"
+import heapdump from 'heapdump'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -109,12 +110,36 @@ async function createDocument(data: any, repo: 'none' | 'local' | 'websocket'): 
   }
 }
 
+async function callGC(): Promise<void> {
+  if (global.gc) {
+    console.log('Calling gc');
+    global.gc();
+    console.log('Called gc');
+    await sleep(1000);
+  } else {
+    console.log('Garbage collection unavailable');
+  }
+}
+
+function takeHeapSnapshot(label: string): void {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const filename = `heap_${timestamp}_${label}.heapsnapshot`;
+  heapdump.writeSnapshot(filename, (err: Error | null, filename: string) => {
+    if (err) {
+      console.error('Error taking heap snapshot:', err);
+    } else {
+      console.log(`Heap snapshot written to ${filename}`);
+    }
+  });
+}
+
 async function runMemoryUsageTest(options: {
   iterations: number;
   dataSource: 'file' | 'generated';
   dataSizeMB?: number;
   repo: 'none' | 'local' | 'websocket';
   useRawString: boolean;
+  takeHeapSnapshot: boolean;
 }) {
   console.log(`Options:`, options);
 
@@ -124,6 +149,11 @@ async function runMemoryUsageTest(options: {
     useRawString: options.useRawString
   });
   console.log(`Data loaded, size: ${JSON.stringify(data).length} bytes`);
+
+  if (options.takeHeapSnapshot) {
+    await callGC();
+    takeHeapSnapshot('before');
+  }
 
   console.log(`Test starting`);
   const startTime = performance.now();
@@ -146,6 +176,14 @@ async function runMemoryUsageTest(options: {
   }
   const duration = Math.ceil(performance.now() - startTime);
   console.log(`Test ended, took: ${duration}ms`);
+  console.log();
+
+  await callGC();
+  logMemoryUsage();
+
+  if (options.takeHeapSnapshot) {
+    takeHeapSnapshot('after');
+  }
 }
 
 // Parse command line arguments
@@ -180,6 +218,12 @@ const argv = yargs(hideBin(process.argv))
     type: 'boolean',
     default: false
   })
+  .option('heapdump', {
+    alias: 'p',
+    description: 'Whether to take heap snapshots during the test',
+    type: 'boolean',
+    default: false
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -193,7 +237,8 @@ async function main() {
       dataSource: argv.dataSource as 'file' | 'generated',
       dataSizeMB: argv.size,
       repo: argv.repo as 'none' | 'local' | 'websocket',
-      useRawString: argv.useRawString
+      useRawString: argv.useRawString,
+      takeHeapSnapshot: argv.heapdump
     };
 
     if (options.repo === 'local') {
