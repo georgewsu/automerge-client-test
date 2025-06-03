@@ -7,6 +7,8 @@ Test and benchmark Automerge memory usage with various options:
 - Generated test data vs data read from file
 - Number of iterations to run
 - Convert strings to RawString
+- Test cache eviction
+- Generate flamegraph or heapdump snapshots
 
 ## Prerequisites
 - pnpm
@@ -34,6 +36,10 @@ Run with specific options
 ```bash
 pnpm client --iterations 5 --dataSource generated --size .5 --repo local --useRawString true
 ```
+Run and generate flamegraph
+```bash
+pnpm flamegraph --iterations 5 --dataSource generated --size .5 --repo local --useRawString true
+```
 
 ### Command Line Options
 - `-i, --iterations`: Number of test iterations (default: 10)
@@ -41,6 +47,8 @@ pnpm client --iterations 5 --dataSource generated --size .5 --repo local --useRa
 - `-s, --size`: Size in MB for generated data (default: 1)
 - `-r, --repo`: Repository type to use ('none', 'local', or 'websocket', default: 'none')
 - `-u, --useRawString`: Convert strings to RawString (default: false)
+- `-c, --removeFromCache`: Trigger cache eviction to remove document from local repo cache (default: false)
+- `-p, --heapdump`: Trigger heapdump and generate snapshot files (default: false)
 
 ### Examples
 
@@ -76,4 +84,14 @@ mkdir -p dist && curl -o dist/data.json https://raw.githubusercontent.com/ThePro
 ```
 ```bash
 pnpm client -i 5 -d file -r local -u false
+```
+
+6. Generate flamegraph and heapdump snapshot files
+```bash
+pnpm flamegraph -p true
+```
+
+7. Trigger cache eviction to remove documents from local repo cache
+```bash
+pnpm client -i 25 -r local -s 1 -c true
 ```
