@@ -1,7 +1,6 @@
 import { next as A } from '@automerge/automerge'
-import { Repo } from "@automerge/automerge-repo"
+import { DocHandle, Repo } from "@automerge/automerge-repo"
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
-import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { fileURLToPath } from 'url'
@@ -9,6 +8,7 @@ import { dirname } from 'path'
 import { createRequire } from "module"
 import process from "node:process"
 import v8 from "v8"
+import heapdump from 'heapdump'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -82,22 +82,26 @@ function getData(source: 'file' | 'generated', options: { filename?: string; siz
   return data;
 }
 
-async function createDocument(data: any, repo: 'none' | 'local' | 'websocket'): Promise<void> {
-  console.log(`Creating document with repo type: ${repo}`);
+async function createDocument(data: any, repoType: 'none' | 'local' | 'websocket', removeFromCache = false): Promise<void> {
+  console.log(`Creating document with repo type: ${repoType}`);
+  let repo: Repo | undefined;
+  let handle: DocHandle<any> | undefined;
   try {
-    switch (repo) {
+    switch (repoType) {
       case 'none':
         console.log('Creating document with A.from()...');
         const doc = A.from(data);
         break;
       case 'local':
+        repo = localRepo;
         console.log('Creating document with local repo...');
-        localRepo.create(data);
+        handle = localRepo.create(data);
         console.log('Document created with local repo');
         break;
       case 'websocket':
+        repo = websocketRepo;
         console.log('Creating document with websocket repo...');
-        websocketRepo.create(data);
+        handle = websocketRepo.create(data);
         // wait to give the server time to sync the document
         await sleep(1000);
         console.log('Document created with websocket repo');
@@ -107,6 +111,41 @@ async function createDocument(data: any, repo: 'none' | 'local' | 'websocket'): 
     console.error('Error in createDocument:', error);
     throw error;
   }
+
+  if (removeFromCache && repo && handle) {
+    await sleep(1000);
+    if (handle.isReady()) {
+      console.log('Removing document from local repo cache.');
+      await repo.removeFromCache(handle.documentId);
+      console.log('Removed document from local repo cache.');
+      await sleep(1000);
+    } else {
+      console.log('Doc handle is not ready, skipped removing from local repo cache');
+    }
+  }
+}
+
+async function callGC(): Promise<void> {
+  if (global.gc) {
+    console.log('Calling gc');
+    global.gc();
+    console.log('Called gc');
+    await sleep(1000);
+  } else {
+    console.log('Garbage collection unavailable');
+  }
+}
+
+function takeHeapSnapshot(label: string): void {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const filename = `heap_${timestamp}_${label}.heapsnapshot`;
+  heapdump.writeSnapshot(filename, (err: Error | null, filename: string) => {
+    if (err) {
+      console.error('Error taking heap snapshot:', err);
+    } else {
+      console.log(`Heap snapshot written to ${filename}`);
+    }
+  });
 }
 
 async function runMemoryUsageTest(options: {
@@ -115,6 +154,8 @@ async function runMemoryUsageTest(options: {
   dataSizeMB?: number;
   repo: 'none' | 'local' | 'websocket';
   useRawString: boolean;
+  removeFromCache: boolean;
+  takeHeapSnapshot: boolean;
 }) {
   console.log(`Options:`, options);
 
@@ -125,6 +166,11 @@ async function runMemoryUsageTest(options: {
   });
   console.log(`Data loaded, size: ${JSON.stringify(data).length} bytes`);
 
+  if (options.takeHeapSnapshot) {
+    await callGC();
+    takeHeapSnapshot('before');
+  }
+
   console.log(`Test starting`);
   const startTime = performance.now();
   for (let i = 0; i < options.iterations; i++) {
@@ -134,7 +180,7 @@ async function runMemoryUsageTest(options: {
 
     try {
       const startTime = Date.now();
-      await createDocument(data, options.repo);
+      await createDocument(data, options.repo, options.removeFromCache);
       const endTime = Date.now();
       console.log(`${new Date().toLocaleString()} created doc from data in ${endTime - startTime}ms`);
     } catch (error) {
@@ -146,6 +192,14 @@ async function runMemoryUsageTest(options: {
   }
   const duration = Math.ceil(performance.now() - startTime);
   console.log(`Test ended, took: ${duration}ms`);
+  console.log();
+
+  await callGC();
+  logMemoryUsage();
+
+  if (options.takeHeapSnapshot) {
+    takeHeapSnapshot('after');
+  }
 }
 
 // Parse command line arguments
@@ -180,6 +234,18 @@ const argv = yargs(hideBin(process.argv))
     type: 'boolean',
     default: false
   })
+  .option('removeFromCache', {
+    alias: 'c',
+    description: 'Whether to remove document from local repo cache',
+    type: 'boolean',
+    default: false
+  })
+  .option('heapdump', {
+    alias: 'p',
+    description: 'Whether to take heap snapshots during the test',
+    type: 'boolean',
+    default: false
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -193,13 +259,15 @@ async function main() {
       dataSource: argv.dataSource as 'file' | 'generated',
       dataSizeMB: argv.size,
       repo: argv.repo as 'none' | 'local' | 'websocket',
-      useRawString: argv.useRawString
+      useRawString: argv.useRawString,
+      removeFromCache: argv.removeFromCache,
+      takeHeapSnapshot: argv.heapdump
     };
 
     if (options.repo === 'local') {
       localRepo = new Repo({
         network: [],
-        storage: new IndexedDBStorageAdapter("automerge-client-test"),
+        storage: undefined,
       });
     } else if (options.repo === 'websocket') {
       console.log(`Connecting to websocket at ws://${WEBSOCKET_HOST}:${WEBSOCKET_PORT}...`);
