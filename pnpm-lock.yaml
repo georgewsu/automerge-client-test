@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@automerge/automerge': 3.0.0-beta.1
+
 importers:
 
   .:
@@ -23,6 +26,9 @@ importers:
       heapdump:
         specifier: ^0.3.15
         version: 0.3.15
+      v8-heapsnapshot:
+        specifier: ^1.3.1
+        version: 1.3.1
       ws:
         specifier: 8.7.0
         version: 8.7.0
@@ -58,9 +64,6 @@ packages:
 
   '@automerge/automerge-repo@2.0.1':
     resolution: {integrity: sha512-1V8pyX5s8PtyPDKmkdEaK/lSuwc9j1HWRYxiWwx2/7FYshfKjl3+mMTAEemzKrwQNE3f3+0zKlI4gChBebAevg==}
-
-  '@automerge/automerge@2.2.9':
-    resolution: {integrity: sha512-6HM52Ops79hAQBWMg/t0MNfGOdEiXyenQjO9F1hKZq0RWDsMLpPa1SzRy/C4/4UyX67sTHuA5CwBpH34SpfZlA==}
 
   '@automerge/automerge@3.0.0-beta.1':
     resolution: {integrity: sha512-oGl8MhOVDVdl+FUWpfRqyh3WB2q5LKguy4y0gGNDi/aS/ddTK18iGxxKzDqa4rhsQ64PdFNOkcHaMg9ebWV3Nw==}
@@ -99,8 +102,14 @@ packages:
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
 
+  '@types/node@18.19.111':
+    resolution: {integrity: sha512-90sGdgA+QLJr1F9X79tQuEut0gEYIfkX9pydI4XGRgvFo9g2JWswefI+WUSUHPYVBHYSEfTEqBxA5hQvAZB3Mw==}
+
   '@types/node@22.15.30':
     resolution: {integrity: sha512-6Q7lr06bEHdlfplU6YRbgG1SFBdlsfNC4/lX+SkhiTs0cpJkOElmWls8PxDFv4yY/xKb8Y6SO0OmSX4wgqTZbA==}
+
+  '@types/oboe@2.1.4':
+    resolution: {integrity: sha512-bXt4BXSQy0N/buSIak1o0TjYAk2SAeK1aZV9xKcb+xVGWYP8NcMOFy2T7Um3kIvEcQJzrdgJ8R6fpbRcp/LEww==}
 
   '@types/ws@8.5.10':
     resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
@@ -580,6 +589,9 @@ packages:
     resolution: {integrity: sha512-eVcrzgbR4tim7c7soKQKtxa/kQM4TzjnlU83rcZ9bHU6t31ehfV7SktN6McWgwPWg+JYMA/O3qpGxBvFq1z2Jg==}
     engines: {node: '>=0.10'}
 
+  http-https@1.0.0:
+    resolution: {integrity: sha512-o0PWwVCSp3O0wS6FvNr6xfBCHgt0m1tvPLFOCc2iFDKTRAXhB7m8klDf7ErowFH8POa6dVdGatKU5I1YYwzUyg==}
+
   https-browserify@1.0.0:
     resolution: {integrity: sha512-J+FkSdyD+0mA0N+81tMotaRMfSL9SGi+xpD3T6YApKsc3bGSXJlfXri3VyFOeYkfLRQisDk1W+jIFFKBeUBbBg==}
 
@@ -782,6 +794,9 @@ packages:
   object.assign@4.1.7:
     resolution: {integrity: sha512-nK28WOo+QIjBkDduTINE4JkF/UJJKyf2EJxvJKfblDpyg0Q+pkOHNTL0Qwy6NP6FhE/EnzV73BxxqcJaXY9anw==}
     engines: {node: '>= 0.4'}
+
+  oboe@2.1.7:
+    resolution: {integrity: sha512-Y2oCMU2xgITORaNvIDCvUyn2ZG/5NI19lLjMFThgYzCH+GA/fgYvVcwxAqnZPiMiUrPq64jLzCkBXqKSu/R6MA==}
 
   on-net-listen@1.1.2:
     resolution: {integrity: sha512-y1HRYy8s/RlcBvDUwKXSmkODMdx4KSuIvloCnQYJ2LdBBC1asY4HtfhXwe3UWknLakATZDnbzht2Ijw3M1EqFg==}
@@ -1058,6 +1073,9 @@ packages:
     resolution: {integrity: sha512-pJOW4nxjlmfwKApE4zvxLScM/njmwj/DiUBv7EabwE4O8kRUy+HIwxQtZLBPll/jx1LJyBcqNfB3/cpv9EZwOw==}
     hasBin: true
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
@@ -1087,6 +1105,9 @@ packages:
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
+
+  v8-heapsnapshot@1.3.1:
+    resolution: {integrity: sha512-mfRTctXCVczzUH2U4FmbBNXH2ikErxkHAlZOIpjLJeNijQRMeVkXJfvPJUMnlLueO2xUEleWK2TjhcxOnc2eRQ==}
 
   vm-browserify@1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
@@ -1194,7 +1215,7 @@ snapshots:
 
   '@automerge/automerge-repo@2.0.1':
     dependencies:
-      '@automerge/automerge': 2.2.9
+      '@automerge/automerge': 3.0.0-beta.1
       bs58check: 3.0.1
       cbor-x: 1.6.0
       debug: 4.4.1
@@ -1204,10 +1225,6 @@ snapshots:
       xstate: 5.19.4
     transitivePeerDependencies:
       - supports-color
-
-  '@automerge/automerge@2.2.9':
-    dependencies:
-      uuid: 9.0.1
 
   '@automerge/automerge@3.0.0-beta.1': {}
 
@@ -1231,9 +1248,17 @@ snapshots:
 
   '@noble/hashes@1.8.0': {}
 
+  '@types/node@18.19.111':
+    dependencies:
+      undici-types: 5.26.5
+
   '@types/node@22.15.30':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/oboe@2.1.4':
+    dependencies:
+      '@types/node': 18.19.111
 
   '@types/ws@8.5.10':
     dependencies:
@@ -1871,6 +1896,8 @@ snapshots:
 
   htmlescape@1.1.1: {}
 
+  http-https@1.0.0: {}
+
   https-browserify@1.0.0: {}
 
   hyperscript-attribute-to-property@1.0.2: {}
@@ -2098,6 +2125,10 @@ snapshots:
       es-object-atoms: 1.1.1
       has-symbols: 1.1.0
       object-keys: 1.1.1
+
+  oboe@2.1.7:
+    dependencies:
+      http-https: 1.0.0
 
   on-net-listen@1.1.2: {}
 
@@ -2412,6 +2443,8 @@ snapshots:
       simple-concat: 1.0.1
       xtend: 4.0.2
 
+  undici-types@5.26.5: {}
+
   undici-types@6.21.0: {}
 
   universalify@2.0.1: {}
@@ -2440,6 +2473,12 @@ snapshots:
       which-typed-array: 1.1.19
 
   uuid@9.0.1: {}
+
+  v8-heapsnapshot@1.3.1:
+    dependencies:
+      '@types/node': 18.19.111
+      '@types/oboe': 2.1.4
+      oboe: 2.1.7
 
   vm-browserify@1.1.2: {}
 
